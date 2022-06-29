@@ -21,9 +21,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = UIWindow(windowScene: windowScene)
 
-        let rootViewController = ViewController()
+        let initialViewController = SearchViewController()
+        initialViewController.viewModel = SearchViewModel(
+            giphyService: GiphyService(
+                apiService: DefaultAPIService()
+            )
+        )
+        let navigationController = UINavigationController(rootViewController: initialViewController)
 
-        self.window?.rootViewController = rootViewController
+        self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
     }
 }

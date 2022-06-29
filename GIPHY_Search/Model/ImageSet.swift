@@ -11,3 +11,5 @@ struct ImageSet {
     let imageURL: String
     let gridImageURL: String
 }
+
+extension ImageSet: Hashable { }

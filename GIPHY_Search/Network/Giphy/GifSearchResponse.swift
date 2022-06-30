@@ -23,6 +23,7 @@ struct GifResponse: Decodable {
     let title: String
     let images: ImageSetResponse
     let user: UserResponse?
+    let source: String?
 
     enum CodingKeys: String, CodingKey {
         case identifer = "id"
@@ -30,6 +31,7 @@ struct GifResponse: Decodable {
         case title
         case images
         case user
+        case source = "source_tld"
     }
 }
 

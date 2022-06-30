@@ -19,7 +19,8 @@ extension GifResponse {
             identifier: self.identifer,
             title: self.title,
             user: self.user?.toUser(),
-            imageSet: self.images.toImageSet()
+            imageSet: self.images.toImageSet(),
+            source: self.source == "" ? nil : self.source
         )
     }
 }
@@ -30,7 +31,8 @@ extension UserResponse {
             name: self.username,
             displayedName: self.displayName,
             description: self.userDescription,
-            avatarImageURL: self.avatarURL
+            avatarImageURL: self.avatarURL,
+            isVerified: self.isVerified
         )
     }
 }

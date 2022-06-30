@@ -17,7 +17,10 @@ class DetailViewModel {
     let userName: String?
     let source: String?
     let isVerified: Bool?
+    var isFavorite: ((Bool) -> Void)?
 
+    private let favoriteStorage: FavoriteStorage
+    private let identifer: String
     private let userImageURL: String?
 
     init(image: Gif) {
@@ -26,7 +29,9 @@ class DetailViewModel {
         self.userName = image.user?.name
         self.source = image.source
         self.isVerified = image.user?.isVerified
+        self.identifer = image.identifier
         self.userImageURL = image.user?.avatarImageURL
+        self.favoriteStorage = FavoriteStorage()
     }
 
     func loadUserImage() {
@@ -37,6 +42,35 @@ class DetailViewModel {
         }
         CacheManager.fetchImage(imageURL: url) { data in
             self.userImage?(data)
+        }
+    }
+
+    func favoriteStatus() {
+        self.favoriteStorage.isFavorite(of: self.identifer) { result in
+            switch result {
+            case .success(let isFavorite):
+                self.isFavorite?(isFavorite)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+
+    func setFavorite(_ completion: (Bool) -> Void) {
+        do {
+            try self.favoriteStorage.setFavorite(for: self.identifer)
+            completion(true)
+        } catch {
+            completion(false)
+        }
+    }
+
+    func setUnfavorite(_ completion: (Bool) -> Void) {
+        do {
+            try self.favoriteStorage.setUnfavorite(for: self.identifer)
+            completion(false)
+        } catch {
+            completion(true)
         }
     }
 }

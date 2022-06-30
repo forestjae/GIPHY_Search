@@ -10,6 +10,7 @@ import Foundation
 final class SearchViewModel {
     weak var coordinator: SearchCoordinator?
     var imageSearched: (([ImageItemViewModel]) -> Void)?
+    var beginNewSearchSession: (() -> Void)?
 
     private let giphyService: GiphyService
     private var imageSearchTask: Cancellable? { willSet { imageSearchTask?.cancel() } }
@@ -27,11 +28,19 @@ final class SearchViewModel {
         self.searchQuery = text
     }
 
+    func changeSearchScope(for index: Int) {
+        guard let searchType = ImageType(index: index) else {
+            return
+        }
+        self.searchType = searchType
+        self.searchImageBegin()
+    }
+
     func searchImageBegin() {
         guard let searchQuery = self.searchQuery else {
             return
         }
-        self.changeSearchScope?()
+        self.beginNewSearchSession?()
         self.reset()
         self.searchImage(for: self.searchType, with: searchQuery)
     }

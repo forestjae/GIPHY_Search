@@ -14,7 +14,6 @@ final class SearchViewModel {
 
     private let giphyService: GiphyService
     private var imageSearchTask: Cancellable? { willSet { imageSearchTask?.cancel() } }
-    private var images: [Gif] = []
     private var hasNextPage: Bool?
     private var currentOffset: Int?
     private var searchType: ImageType = .gif
@@ -54,8 +53,8 @@ final class SearchViewModel {
         self.searchImage(for: .gif, with: "apple", offset: offset)
     }
 
-    func didSelectImage(at indexPath: IndexPath) {
-        self.coordinator?.detailFlow(with: self.images[indexPath.row])
+    func didSelectItem(_ item: ImageItemViewModel) {
+        self.coordinator?.detailFlow(with: item.image)
     }
 
     private func searchImage(for type: ImageType, with query: String, offset: Int = 0) {
@@ -66,7 +65,6 @@ final class SearchViewModel {
         ) { result in
             switch result {
             case .success(let gifPage):
-                self.images = gifPage.gifs
                 self.hasNextPage = gifPage.hasNextPage
                 self.currentOffset = gifPage.offset + 10
                 self.imageSearched?(gifPage.gifs.map { ImageItemViewModel(image: $0) })

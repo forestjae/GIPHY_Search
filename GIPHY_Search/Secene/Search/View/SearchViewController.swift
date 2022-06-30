@@ -166,8 +166,11 @@ extension SearchViewController: UISearchBarDelegate {
 }
 
 extension SearchViewController: SearchResultContainerViewControllerDelegate {
-    func didSelectItem(at indexPath: IndexPath) {
-        self.viewModel?.didSelectImage(at: indexPath)
+    func didSelectItem(_ item: SearchItem) {
+        switch item {
+        case .image(let item):
+            self.viewModel?.didSelectItem(item)
+        }
     }
 
     func didEndScroll() {

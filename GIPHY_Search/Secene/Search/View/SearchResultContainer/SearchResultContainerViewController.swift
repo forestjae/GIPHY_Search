@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SearchResultContainerViewControllerDelegate: AnyObject {
-    func didSelectItem(at indexPath: IndexPath)
+    func didSelectItem(_ item: SearchItem)
     func didEndScroll()
 }
 
@@ -180,7 +180,11 @@ extension SearchResultContainerViewController: UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.didSelectItem(at: indexPath)
+        guard let section = SearchSection(rawValue: indexPath.section) else {
+            return
+        }
+        let item = self.snapShot.itemIdentifiers(inSection: section)[indexPath.row]
+        self.delegate?.didSelectItem(item)
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

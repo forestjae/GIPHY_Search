@@ -12,7 +12,13 @@ final class SearchViewController: UIViewController {
     // MARK: - Variable(s)
 
     var viewModel: SearchViewModel?
-    private var searchController = UISearchController(searchResultsController: SearchResultContianerViewController())
+
+    private lazy var searchController: UISearchController = {
+        let searchResultController = SearchResultContainerViewController()
+        searchResultController.delegate = self
+        let searchController = UISearchController(searchResultsController: searchResultController)
+        return searchController
+    }()
 
     // MARK: - Override(s)
 
@@ -59,7 +65,7 @@ final class SearchViewController: UIViewController {
     private func binding() {
         self.viewModel?.imageSearched = { [weak self] items in
             DispatchQueue.main.async {
-                guard let controller = self?.searchController.searchResultsController as? SearchResultContianerViewController else {
+                guard let controller = self?.searchController.searchResultsController as? SearchResultContainerViewController else {
                     return
                 }
                 let searchItems = items.map { SearchItem.image($0) }
@@ -77,12 +83,10 @@ extension SearchViewController: UISearchBarDelegate {
 
         self.viewModel?.searchImage(with: text)
     }
+}
 
-    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text else {
-            return
-        }
-
-        self.viewModel?.searchImage(with: text)
+extension SearchViewController: SearchResultContainerViewControllerDelegate {
+    func didSelectItem(at indexPath: IndexPath) {
+        self.viewModel?.didSelectImage(at: indexPath)
     }
 }

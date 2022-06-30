@@ -56,10 +56,18 @@ final class SearchViewController: UIViewController {
     private func setupSearchController() {
         self.searchController.searchBar.placeholder = "Search GIPHY"
         self.searchController.searchBar.searchBarStyle = .minimal
+        self.searchController.searchBar.scopeButtonTitles = ImageType.allCases
+            .map { $0.description + "s"}
         self.searchController.hidesNavigationBarDuringPresentation = false
         self.searchController.obscuresBackgroundDuringPresentation = false
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.setImage(UIImage(), for: .search, state: .normal)
+        self.searchController.searchBar.showsScopeBar = true
+        self.searchController.automaticallyShowsScopeBar = false
+        self.searchController.searchBar.setScopeBarButtonTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .headline)],
+            for: .normal
+        )
     }
 
     private func binding() {

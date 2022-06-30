@@ -125,8 +125,10 @@ final class DetailViewController: UIViewController {
         self.binding()
     }
 
-    override func viewDidLayoutSubviews() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.viewModel?.loadUserImage()
+        self.viewModel?.favoriteStatus()
     }
 
     // MARK: - Private Method(s)
@@ -139,6 +141,7 @@ final class DetailViewController: UIViewController {
     private func setupSubviews() {
         self.setupNameSetStackView()
         self.setupPlayerView()
+        self.setupIsFavoriteButton()
     }
 
     private func setupPlayerView() {
@@ -186,6 +189,31 @@ final class DetailViewController: UIViewController {
 
         if self.viewModel?.isVerified == true {
             self.verifiedImageView.isHidden = false
+        }
+    }
+
+    private func setupIsFavoriteButton() {
+        self.favoriteButton.addTarget(
+            self,
+            action: #selector(isFavoriteButtonDidTap),
+            for: .touchUpInside
+        )
+    }
+
+    @objc
+    private func isFavoriteButtonDidTap() {
+        if self.favoriteButton.isSelected {
+            self.viewModel?.setUnfavorite { result in
+                DispatchQueue.main.async {
+                    self.favoriteButton.isSelected = result
+                }
+            }
+        } else {
+            self.viewModel?.setFavorite { result in
+                DispatchQueue.main.async {
+                    self.favoriteButton.isSelected = result
+                }
+            }
         }
     }
 
@@ -258,6 +286,11 @@ final class DetailViewController: UIViewController {
         self.viewModel?.userImage = { [weak self] data in
             DispatchQueue.main.async {
                 self?.userImageView.image = UIImage(data: data)
+            }
+        }
+        self.viewModel?.isFavorite = { [weak self] bool in
+            DispatchQueue.main.async {
+                self?.favoriteButton.isSelected = bool
             }
         }
     }

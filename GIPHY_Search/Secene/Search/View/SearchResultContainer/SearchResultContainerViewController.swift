@@ -9,6 +9,7 @@ import UIKit
 
 protocol SearchResultContainerViewControllerDelegate: AnyObject {
     func didSelectItem(at indexPath: IndexPath)
+    func didEndScroll()
 }
 
 class SearchResultContainerViewController: UIViewController {
@@ -175,5 +176,14 @@ extension SearchResultContainerViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.delegate?.didSelectItem(at: indexPath)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let targetOffset = scrollView.contentOffset.y + self.view.frame.height
+        let scrollViewHeight = scrollView.contentSize.height
+
+        if targetOffset > scrollViewHeight - (self.view.frame.height * 0.4) {
+            self.delegate?.didEndScroll()
+        }
     }
 }

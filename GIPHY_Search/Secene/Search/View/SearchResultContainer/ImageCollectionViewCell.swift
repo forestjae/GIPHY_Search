@@ -35,12 +35,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     internal func configureContent(_ viewModel: ImageItemViewModel) {
         self.contentView.backgroundColor = .random()
-        let videoURL = URL(string: viewModel.image.imageSet.gridMp4URL)!
+        guard let videoURL = URL(string: viewModel.image.imageSet.gridMp4URL) else {
+            return
+        }
+
         CacheManager.fetchVideo(videoURL: videoURL) { asset in
+            self.player = AVPlayer(playerItem: AVPlayerItem(asset: asset))
             DispatchQueue.main.async {
-                self.player = AVPlayer(playerItem: AVPlayerItem(asset: asset))
                 self.playerView.player = self.player
-                self.player?.seek(to: CMTime.zero)
                 self.player?.play()
                 self.player?.actionAtItemEnd = .none
                 NotificationCenter.default.addObserver(

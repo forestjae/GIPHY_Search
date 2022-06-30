@@ -24,16 +24,16 @@ class CacheManager {
         return url
     }()
 
-    static func fetchImage(imageURL: URL, completionHandler: @escaping (UIImage) -> Void) {
+    static func fetchImage(imageURL: URL, completionHandler: @escaping (Data) -> Void) {
         let request = URLRequest(url: imageURL)
 
         self.loadImageFromCache(request: request) { result in
             switch result {
-            case .success(let image):
-                completionHandler(image)
+            case .success(let imageData):
+                completionHandler(imageData)
             case .failure:
-                self.downloadImage(request: request) { image in
-                    completionHandler(image)
+                self.downloadImage(request: request) { imageData in
+                    completionHandler(imageData)
                 }
             }
         }
@@ -41,7 +41,7 @@ class CacheManager {
 
     private static func downloadImage(
         request: URLRequest,
-        completionHandler: @escaping (UIImage) -> Void
+        completionHandler: @escaping (Data) -> Void
     ) {
         let dataTask = URLSession.shared.dataTask(with: request) { data, response, _ in
             guard let data = data else {
@@ -53,10 +53,8 @@ class CacheManager {
             }
             let cachedResponse = CachedURLResponse(response: response, data: data)
             self.imageCache.storeCachedResponse(cachedResponse, for: request)
-            guard let image = UIImage(data: data) else {
-                return
-            }
-            completionHandler(image)
+
+            completionHandler(data)
 
         }
         dataTask.resume()
@@ -64,14 +62,10 @@ class CacheManager {
 
     private static func loadImageFromCache(
         request: URLRequest,
-        completionHandler: @escaping (Result<UIImage, CacheError>) -> Void
+        completionHandler: @escaping (Result<Data, CacheError>) -> Void
     ) {
-        if let data = self.imageCache.cachedResponse(for: request)?.data {
-            guard let image = UIImage(data: data) else {
-                completionHandler(.failure(.inValidCashedImageData))
-                return
-            }
-            completionHandler(.success(image))
+        if let imageData = self.imageCache.cachedResponse(for: request)?.data {
+            completionHandler(.success(imageData))
         } else {
             completionHandler(.failure(.absentCashedImage))
         }

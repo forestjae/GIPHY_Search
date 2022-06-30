@@ -12,6 +12,7 @@ class DetailViewModel {
 
     // MARK: - Output
     let animatedImageURL: String
+    let title: String
     var userImage: ((Data) -> Void)?
     let userDisplayedName: String?
     let userName: String?
@@ -25,6 +26,7 @@ class DetailViewModel {
 
     init(image: Gif) {
         self.animatedImageURL = image.imageSet.originalMP4Image
+        self.title = image.type.description
         self.userDisplayedName = image.user?.displayedName ?? image.user?.name
         self.userName = image.user?.name
         self.source = image.source

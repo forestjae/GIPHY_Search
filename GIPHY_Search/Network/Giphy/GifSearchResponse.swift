@@ -18,6 +18,7 @@ struct GifSearchResponse: Decodable {
 }
 
 struct GifResponse: Decodable {
+    let type: String
     let identifer: String
     let username: String
     let title: String
@@ -26,6 +27,7 @@ struct GifResponse: Decodable {
     let source: String?
 
     enum CodingKeys: String, CodingKey {
+        case type
         case identifer = "id"
         case username
         case title
@@ -128,3 +130,5 @@ struct FixedWidthImageResponse: Decodable {
         case webp
     }
 }
+
+extension ImageType: Decodable { }

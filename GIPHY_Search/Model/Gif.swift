@@ -12,6 +12,7 @@ struct Gif {
     let title: String
     let user: User?
     let imageSet: ImageSet
+    let source: String?
 }
 
 extension Gif: Hashable {

@@ -8,12 +8,12 @@
 import Foundation
 
 final class SearchViewModel {
-
+    weak var coordinator: SearchCoordinator?
     var imageSearched: (([ImageItemViewModel]) -> Void)?
 
     private let giphyService: GiphyService
     private var imageSearchTask: Cancellable? { willSet { imageSearchTask?.cancel() } }
-    private var imageItemViewModel: [ImageItemViewModel] = []
+    private var images: [Gif] = []
 
     init(giphyService: GiphyService) {
         self.giphyService = giphyService
@@ -23,11 +23,16 @@ final class SearchViewModel {
         let task = self.giphyService.searchGif(query: query) { result in
             switch result {
             case .success(let gifs):
+                self.images = gifs
                 self.imageSearched?(gifs.map { ImageItemViewModel(image: $0) })
             case .failure(let error):
                 print(error)
             }
         }
         self.imageSearchTask = task
+    }
+
+    func didSelectImage(at indexPath: IndexPath) {
+        self.coordinator?.detailFlow(with: self.images[indexPath.row])
     }
 }

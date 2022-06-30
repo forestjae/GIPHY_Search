@@ -39,7 +39,12 @@ class SearchResultContainerViewController: UIViewController {
 
     func appendSearchResultSnapshot(items: [SearchItem], for section: SearchSection) {
         self.snapShot.appendItems(items, toSection: section)
-        self.searchResultCollectionView.collectionViewLayout = createSearchResultCollectionViewLayout()
+        self.dataSource?.apply(self.snapShot)
+    }
+
+    func resetSnapshot() {
+        let currentItems = self.snapShot.itemIdentifiers
+        self.snapShot.deleteItems(self.snapShot.itemIdentifiers)
         self.dataSource?.apply(self.snapShot)
     }
 

@@ -50,6 +50,7 @@
 		333453EF286D85590040A0A9 /* CoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453EE286D85590040A0A9 /* CoreDataProvider.swift */; };
 		333453F1286D85A60040A0A9 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453F0286D85A60040A0A9 /* CoreDataError.swift */; };
 		333453F3286D87DA0040A0A9 /* FavoriteStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453F2286D87DA0040A0A9 /* FavoriteStorage.swift */; };
+		333453F8286D9FB20040A0A9 /* ImageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453F7286D9FB20040A0A9 /* ImageType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +99,7 @@
 		333453EE286D85590040A0A9 /* CoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataProvider.swift; sourceTree = "<group>"; };
 		333453F0286D85A60040A0A9 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
 		333453F2286D87DA0040A0A9 /* FavoriteStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStorage.swift; sourceTree = "<group>"; };
+		333453F7286D9FB20040A0A9 /* ImageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +154,7 @@
 				33345382286B55BE0040A0A9 /* Gif.swift */,
 				33345384286B56D60040A0A9 /* User.swift */,
 				33345386286B57E20040A0A9 /* ImageSet.swift */,
+				333453F7286D9FB20040A0A9 /* ImageType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				333453DE286D70F80040A0A9 /* UIFont+Extension.swift in Sources */,
 				333453D4286C9EC50040A0A9 /* Coordinator.swift in Sources */,
 				333453C8286C59130040A0A9 /* UIColor+Extension.swift in Sources */,
+				333453F8286D9FB20040A0A9 /* ImageType.swift in Sources */,
 				3334538D286B5EE00040A0A9 /* APIRequest.swift in Sources */,
 				333453F1286D85A60040A0A9 /* CoreDataError.swift in Sources */,
 				333453C2286C0D340040A0A9 /* GifSearchResponseDTO+Mapping.swift in Sources */,

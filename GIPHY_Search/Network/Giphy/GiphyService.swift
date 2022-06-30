@@ -15,13 +15,15 @@ final class GiphyService {
     }
 
     func searchGif(
+        type: ImageType,
         query: String,
-        completion: @escaping ((Result<[Gif], APIError>) -> Void)
+        offset: Int,
+        completion: @escaping ((Result<GifPage, APIError>) -> Void)
     ) -> Cancellable? {
-        let request = GifSearchRequest(query: query)
+        let request = GifSearchRequest(type: type, query: query, offset: offset)
         return self.apiService.request(request) { result in
             let convertedResult = result
-                .map { $0.toGifs() }
+                .map { $0.toGifPage() }
             completion(convertedResult)
         }
     }

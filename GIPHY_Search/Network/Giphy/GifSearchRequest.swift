@@ -15,12 +15,16 @@ struct GifSearchRequest: GiphyAPIRequest {
     let headers: [String : String]? = nil
     let query: String
     let imageSetConfiguration: String = "clips_grid_picker"
+    let limit: Int = 20
+    let offset: Int = 0
 
     var parameters: [String : String] {
         [
             "api_key": self.serviceKey,
             "q": self.query,
-            "bundle": self.imageSetConfiguration
+            "bundle": self.imageSetConfiguration,
+            "limit": String(self.limit),
+            "offset": String(self.offset)
         ]
     }
 }

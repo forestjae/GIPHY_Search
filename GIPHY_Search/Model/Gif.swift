@@ -13,10 +13,13 @@ struct Gif {
     let user: User?
     let imageSet: ImageSet
     let source: String?
+    let type: ImageType
 }
 
-extension Gif: Hashable {
-    static func == (lhs: Gif, rhs: Gif) -> Bool {
-        lhs.identifier == rhs.identifier
-    }
+extension Gif: Hashable { }
+
+struct GifPage {
+    let offset: Int
+    let hasNextPage: Bool
+    let gifs: [Gif]
 }

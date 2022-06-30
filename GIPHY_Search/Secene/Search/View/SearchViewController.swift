@@ -72,21 +72,37 @@ final class SearchViewController: UIViewController {
                 controller.appendSearchResultSnapshot(items: searchItems, for: .searchResult)
             }
         }
+        self.viewModel?.beginNewSearchSession = { [weak self] in
+            guard let controller = self?.searchResultController else {
+                return
+            }
+            controller.resetSnapshot()
+        }
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text else {
-            return
-        }
+        self.viewModel?.searchImageBegin()
+    }
 
-        self.viewModel?.searchImage(with: text)
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.viewModel?.searchQueryText(searchText)
+    }
+
+    func searchBar(
+        _ searchBar: UISearchBar,
+        selectedScopeButtonIndexDidChange selectedScope: Int
+    ) {
+        self.viewModel?.changeSearchScope(for: selectedScope)
     }
 }
 
 extension SearchViewController: SearchResultContainerViewControllerDelegate {
     func didSelectItem(at indexPath: IndexPath) {
         self.viewModel?.didSelectImage(at: indexPath)
+    }
+    func didEndScroll() {
+        self.viewModel?.loadNextPage()
     }
 }

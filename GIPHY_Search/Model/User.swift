@@ -12,6 +12,7 @@ struct User {
     let displayedName: String
     let description: String
     let avatarImageURL: String
+    let isVerified: Bool
 }
 
 extension User: Hashable { }

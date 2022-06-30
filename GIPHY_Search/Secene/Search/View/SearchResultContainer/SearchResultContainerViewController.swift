@@ -7,9 +7,15 @@
 
 import UIKit
 
-class SearchResultContianerViewController: UIViewController {
+protocol SearchResultContainerViewControllerDelegate: AnyObject {
+    func didSelectItem(at indexPath: IndexPath)
+}
+
+class SearchResultContainerViewController: UIViewController {
 
     // MARK: - Variable(s)
+
+    weak var delegate: SearchResultContainerViewControllerDelegate?
 
     private var dataSource: UICollectionViewDiffableDataSource<SearchSection, SearchItem>?
     private var snapShot = NSDiffableDataSourceSnapshot<SearchSection, SearchItem>()
@@ -121,13 +127,19 @@ class SearchResultContianerViewController: UIViewController {
         return UICollectionViewDiffableDataSource<SearchSection, SearchItem>(
             collectionView: self.searchResultCollectionView
         ) { collectionView, indexPath, itemIdentifier in
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "image",
                 for: indexPath
-            ) as? ImageCollectionViewCell
-            switch itemIdentifier {
-            case .image(let imageItemViewModel):
-                cell?.configureContent(imageItemViewModel)
+            ) as? ImageCollectionViewCell else {
+                return nil
+            }
+            DispatchQueue.main.async {
+                if indexPath == self.searchResultCollectionView.indexPath(for: cell) {
+                    switch itemIdentifier {
+                    case .image(let imageItemViewModel):
+                        cell.configureContent(imageItemViewModel)
+                    }
+                }
             }
             return cell
         }
@@ -142,7 +154,7 @@ enum SearchItem: Hashable {
     case image(ImageItemViewModel)
 }
 
-extension SearchResultContianerViewController: UICollectionViewDelegate {
+extension SearchResultContainerViewController: UICollectionViewDelegate {
     func collectionView(
         _ collectionView: UICollectionView,
         willDisplay cell: UICollectionViewCell,
@@ -159,5 +171,9 @@ extension SearchResultContianerViewController: UICollectionViewDelegate {
             return
         }
         cell.stopVideo()
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.delegate?.didSelectItem(at: indexPath)
     }
 }

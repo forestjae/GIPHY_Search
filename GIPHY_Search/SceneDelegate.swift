@@ -9,6 +9,7 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    var appCoordinator: AppCoordinator?
 
     func scene(
         _ scene: UIScene,
@@ -21,15 +22,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = UIWindow(windowScene: windowScene)
 
-        let initialViewController = SearchViewController()
-        initialViewController.viewModel = SearchViewModel(
-            giphyService: GiphyService(
-                apiService: DefaultAPIService()
-            )
-        )
-        let navigationController = UINavigationController(rootViewController: initialViewController)
+        guard let window = self.window else {
+            return
+        }
 
-        self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
+        self.appCoordinator = AppCoordinator(window: window)
+        self.appCoordinator?.start()
     }
 }

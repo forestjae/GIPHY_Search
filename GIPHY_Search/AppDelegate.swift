@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,5 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             name: "Default Configuration",
             sessionRole: connectingSceneSession.role
         )
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        try? CoreDataProvider.shared.saveContext()
     }
 }

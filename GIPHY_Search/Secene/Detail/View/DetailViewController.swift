@@ -86,7 +86,7 @@ final class DetailViewController: UIViewController {
 
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemGray5
+        label.textColor = .secondFont
         label.font = .systemFont(ofSize: 12, weight: .bold).metrics(for: .caption1)
         return label
     }()
@@ -136,6 +136,7 @@ final class DetailViewController: UIViewController {
     private func setupController() {
         self.view.addSubview(self.scrollView)
         self.view.backgroundColor = .black
+        self.navigationItem.title = self.viewModel?.title
     }
 
     private func setupSubviews() {
@@ -175,10 +176,11 @@ final class DetailViewController: UIViewController {
             self.userNameLabel.text = "@" + userName
         } else if let source = self.viewModel?.source {
             self.userDisplayedNameLabel.text = "Source"
-            self.userDisplayedNameLabel.textColor = .systemGray5
+            self.userDisplayedNameLabel.textColor = .secondFont
             self.userDisplayedNameLabel.font = .systemFont(ofSize: 12, weight: .bold)
                 .metrics(for: .callout)
             self.userNameLabel.text = source
+            self.userNameLabel.textColor = .mainFont
             self.userNameLabel.font = .systemFont(ofSize: 16, weight: .heavy)
                 .metrics(for: .headline)
         } else {

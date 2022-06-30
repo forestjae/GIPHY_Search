@@ -10,6 +10,7 @@ import UIKit
 private enum Color {
     case mainBackground
     case mainFont
+    case secondFont
     case mainTint
 
     var color: UIColor {
@@ -24,5 +25,6 @@ private enum Color {
 extension UIColor {
     static let mainBackground = Color.mainBackground.color
     static let mainFont = Color.mainFont.color
+    static let secondFont = Color.secondFont.color
     static let mainTint = Color.mainTint.color
 }

@@ -33,7 +33,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    internal func configureContent(_ viewModel: ImageItemViewModel) {
+    func configureContent(_ viewModel: ImageItemViewModel) {
         self.contentView.backgroundColor = .random()
         guard let videoURL = URL(string: viewModel.image.imageSet.gridMp4URL) else {
             return
@@ -57,11 +57,11 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    internal func playVideo() {
+    func playVideo() {
         self.player?.play()
     }
 
-    internal func stopVideo() {
+    func stopVideo() {
         self.player?.pause()
     }
 

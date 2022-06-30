@@ -10,8 +10,17 @@ import Foundation
 struct GifSearchRequest: GiphyAPIRequest {
     typealias APIResponse = GifSearchResponse
 
+    let type: ImageType
     let method: HTTPMethod = .get
-    let path: String = "gifs/search"
+    var path: String {
+        switch self.type {
+        case .gif:
+            return "gifs/search"
+        case .sticker:
+            return "stickers/search"
+        }
+    }
+
     let headers: [String : String]? = nil
     let query: String
     let imageSetConfiguration: String = "clips_grid_picker"

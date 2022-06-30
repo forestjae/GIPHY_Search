@@ -14,19 +14,23 @@ final class SearchViewController: UIViewController {
     var viewModel: SearchViewModel?
 
     private lazy var searchController: UISearchController = {
-        let searchResultController = SearchResultContainerViewController()
-        searchResultController.delegate = self
-        let searchController = UISearchController(searchResultsController: searchResultController)
+//        let searchResultController = SearchResultContainerViewController()
+
+        let searchController = UISearchController(searchResultsController: nil)
         return searchController
     }()
+
+    private let contianerView = UIView()
+    private let searchResultController = SearchResultContainerViewController()
 
     // MARK: - Override(s)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .mainBackground
+        self.view.addSubview(self.contianerView)
         self.setupController()
         self.setupSubviews()
+        self.setupHierarchy()
         self.setupConstraint()
         self.binding()
     }
@@ -34,12 +38,19 @@ final class SearchViewController: UIViewController {
     // MARK: - Method(s)
 
     private func setupController() {
-
+        self.view.backgroundColor = .mainBackground
+        self.navigationItem.hidesSearchBarWhenScrolling = false
     }
 
     private func setupSubviews() {
         self.setupNavigationBar()
         self.setupSearchController()
+        self.setupSearchResultController()
+    }
+
+    private func setupHierarchy() {
+        self.view.addSubview(self.contianerView)
+        self.contianerView.addSubview(self.searchResultController.view)
     }
 
     private func setupNavigationBar() {
@@ -49,8 +60,48 @@ final class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
 
+    private func setupSearchResultController() {
+        self.searchResultController.delegate = self
+        self.addChild(self.searchResultController)
+        self.searchResultController.didMove(toParent: self)
+    }
+
     private func setupConstraint() {
-        self.searchController.searchBar.translatesAutoresizingMaskIntoConstraints = false
+        guard let searchResultView = self.searchResultController.view else {
+            return
+        }
+
+        self.contianerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.contianerView.topAnchor.constraint(
+                equalTo: self.view.topAnchor
+            ),
+            self.contianerView.bottomAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.bottomAnchor
+            ),
+            self.contianerView.leadingAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.leadingAnchor
+            ),
+            self.contianerView.trailingAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.trailingAnchor
+            )
+        ])
+
+        self.searchResultController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            searchResultView.topAnchor.constraint(
+                equalTo: self.contianerView.topAnchor
+            ),
+            searchResultView.bottomAnchor.constraint(
+                equalTo: self.contianerView.safeAreaLayoutGuide.bottomAnchor
+            ),
+            searchResultView.leadingAnchor.constraint(
+                equalTo: self.contianerView.safeAreaLayoutGuide.leadingAnchor
+            ),
+            searchResultView.trailingAnchor.constraint(
+                equalTo: self.contianerView.safeAreaLayoutGuide.trailingAnchor
+            )
+        ])
     }
 
     private func setupSearchController() {
@@ -73,7 +124,7 @@ final class SearchViewController: UIViewController {
     private func binding() {
         self.viewModel?.imageSearched = { [weak self] items in
             DispatchQueue.main.async {
-                guard let controller = self?.searchController.searchResultsController as? SearchResultContainerViewController else {
+                guard let controller = self?.searchResultController else {
                     return
                 }
                 let searchItems = items.map { SearchItem.image($0) }
@@ -104,12 +155,21 @@ extension SearchViewController: UISearchBarDelegate {
     ) {
         self.viewModel?.changeSearchScope(for: selectedScope)
     }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchResultController.view.isHidden = true
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.searchResultController.view.isHidden = false
+    }
 }
 
 extension SearchViewController: SearchResultContainerViewControllerDelegate {
     func didSelectItem(at indexPath: IndexPath) {
         self.viewModel?.didSelectImage(at: indexPath)
     }
+
     func didEndScroll() {
         self.viewModel?.loadNextPage()
     }

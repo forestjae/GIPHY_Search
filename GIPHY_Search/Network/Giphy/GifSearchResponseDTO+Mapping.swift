@@ -8,19 +8,31 @@
 import Foundation
 
 extension GifSearchResponse {
-    func toGifs() -> [Gif] {
-        return self.results.compactMap { $0.toGif() }
+    func toGifPage() -> GifPage {
+        let offset = self.pagination.offset
+        let target = min(self.pagination.totalCount, 4999)
+        let isNextPage = offset < target
+        return GifPage(
+            offset: offset,
+            hasNextPage: isNextPage,
+            gifs: self.results.compactMap { $0.toGif() }
+        )
     }
 }
 
 extension GifResponse {
-    func toGif() -> Gif {
+    func toGif() -> Gif? {
+        guard let type = ImageType(rawValue: self.type) else {
+            return nil
+        }
+
         return Gif(
             identifier: self.identifer,
             title: self.title,
             user: self.user?.toUser(),
             imageSet: self.images.toImageSet(),
-            source: self.source == "" ? nil : self.source
+            source: self.source == "" ? nil : self.source,
+            type: type
         )
     }
 }

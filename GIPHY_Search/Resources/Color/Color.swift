@@ -9,6 +9,8 @@ import UIKit
 
 private enum Color {
     case mainBackground
+    case mainFont
+    case mainTint
 
     var color: UIColor {
         guard let color = UIColor(named: String(describing: self)) else {
@@ -21,4 +23,6 @@ private enum Color {
 
 extension UIColor {
     static let mainBackground = Color.mainBackground.color
+    static let mainFont = Color.mainFont.color
+    static let mainTint = Color.mainTint.color
 }

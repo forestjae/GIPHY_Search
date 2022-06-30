@@ -24,8 +24,8 @@ struct GifSearchRequest: GiphyAPIRequest {
     let headers: [String : String]? = nil
     let query: String
     let imageSetConfiguration: String = "clips_grid_picker"
-    let limit: Int = 20
-    let offset: Int = 0
+    let limit: Int = 10
+    let offset: Int
 
     var parameters: [String : String] {
         [

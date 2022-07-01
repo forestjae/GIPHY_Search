@@ -9,10 +9,12 @@ import Foundation
 
 final class SearchViewModel {
     weak var coordinator: SearchCoordinator?
+    var searchQueriesHistoryFetched: (([String]) -> Void)?
     var imageSearched: (([ImageItemViewModel]) -> Void)?
     var beginNewSearchSession: (() -> Void)?
 
     private let giphyService: GiphyService
+    private let searchQueryStorage: SearchQueryStorage
     private var imageSearchTask: Cancellable? { willSet { imageSearchTask?.cancel() } }
     private var hasNextPage: Bool?
     private var currentOffset: Int?
@@ -21,6 +23,7 @@ final class SearchViewModel {
     
     init(giphyService: GiphyService) {
         self.giphyService = giphyService
+        self.searchQueryStorage = SearchQueryStorage()
     }
 
     func searchQueryText(_ text: String) {
@@ -35,13 +38,20 @@ final class SearchViewModel {
         self.searchImageBegin()
     }
 
-    func searchImageBegin() {
+    func searchImageBegin(with newQuery: String? = nil) {
+        if let query = newQuery {
+            self.searchQuery = query
+        }
+
         guard let searchQuery = self.searchQuery else {
             return
         }
+
         self.beginNewSearchSession?()
         self.reset()
         self.searchImage(for: self.searchType, with: searchQuery)
+        self.saveQuery(searchQuery)
+        self.fetchQueryHistory()
     }
 
     func loadNextPage() {
@@ -55,6 +65,24 @@ final class SearchViewModel {
 
     func didSelectItem(_ item: ImageItemViewModel) {
         self.coordinator?.detailFlow(with: item.image)
+    }
+
+    func fetchQueryHistory() {
+        self.searchQueryStorage.fetchQuery { result in
+            switch result {
+            case .success(let queries):
+                self.searchQueriesHistoryFetched?(queries)
+            case .failure:
+                return
+            }
+        }
+    }
+
+    private func saveQuery(_ query: String) {
+        guard query != "" else {
+            return
+        }
+        try? self.searchQueryStorage.saveQuery(of: query)
     }
 
     private func searchImage(for type: ImageType, with query: String, offset: Int = 0) {

@@ -18,6 +18,7 @@ class DetailViewModel {
     let userName: String?
     let source: String?
     let isVerified: Bool?
+    let aspectRatio: Double
     var isFavorite: ((Bool) -> Void)?
 
     private let favoriteStorage: FavoriteStorage
@@ -33,6 +34,7 @@ class DetailViewModel {
         self.isVerified = image.user?.isVerified
         self.identifer = image.identifier
         self.userImageURL = image.user?.avatarImageURL
+        self.aspectRatio = image.imageSet.originalHeight / image.imageSet.originalWidth
         self.favoriteStorage = FavoriteStorage()
     }
 

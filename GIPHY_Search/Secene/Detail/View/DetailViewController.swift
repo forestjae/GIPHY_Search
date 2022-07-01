@@ -266,9 +266,17 @@ final class DetailViewController: UIViewController {
             )
         ])
 
+        guard let aspectRatio = self.viewModel?.aspectRatio else {
+            return
+        }
+
         self.playerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            playerView.heightAnchor.constraint(equalToConstant: 200)
+            playerView.widthAnchor.constraint(equalToConstant: 480),
+            playerView.heightAnchor.constraint(
+                equalTo: self.playerView.widthAnchor,
+                multiplier: CGFloat(aspectRatio)
+            )
         ])
 
         self.userImageView.translatesAutoresizingMaskIntoConstraints = false

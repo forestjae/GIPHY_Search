@@ -121,6 +121,16 @@ class SearchResultContainerViewController: UIViewController {
             }
 
             let section = NSCollectionLayoutSection(group: group)
+            let titleSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(30)
+            )
+            let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: titleSize,
+                elementKind: "header",
+                alignment: .top
+            )
+            section.boundarySupplementaryItems = [titleSupplementary]
             return section
         }
 

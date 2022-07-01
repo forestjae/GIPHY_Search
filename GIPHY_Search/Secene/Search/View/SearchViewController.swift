@@ -9,15 +9,38 @@ import UIKit
 
 final class SearchViewController: UIViewController {
 
+    // MARK: - CollectionView Section/Item
+    enum SearchGuideSection: Int {
+        case searchHistory = 0
+
+        var title: String {
+            switch self {
+            case .searchHistory:
+                return "Recent Searches"
+            }
+        }
+    }
+
+    enum SearchGuideItem: Hashable {
+        case searchQueryHistory(String)
+    }
+
     // MARK: - Variable(s)
 
     var viewModel: SearchViewModel?
 
-    private lazy var searchController: UISearchController = {
-//        let searchResultController = SearchResultContainerViewController()
+    private var dataSource: UICollectionViewDiffableDataSource<SearchGuideSection, SearchGuideItem>?
+    private var snapShot = NSDiffableDataSourceSnapshot<SearchGuideSection, SearchGuideItem>()
 
+    private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         return searchController
+    }()
+
+    private var searchGuideCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
     }()
 
     private let contianerView = UIView()
@@ -46,10 +69,12 @@ final class SearchViewController: UIViewController {
         self.setupNavigationBar()
         self.setupSearchController()
         self.setupSearchResultController()
+        self.setupSearchGuideCollectionView()
     }
 
     private func setupHierarchy() {
         self.view.addSubview(self.contianerView)
+        self.view.addSubview(self.searchGuideCollectionView)
         self.contianerView.addSubview(self.searchResultController.view)
     }
 
@@ -102,6 +127,22 @@ final class SearchViewController: UIViewController {
                 equalTo: self.contianerView.safeAreaLayoutGuide.trailingAnchor
             )
         ])
+
+        self.searchGuideCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            searchGuideCollectionView.topAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.topAnchor
+            ),
+            searchGuideCollectionView.bottomAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.bottomAnchor
+            ),
+            searchGuideCollectionView.leadingAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.leadingAnchor
+            ),
+            searchGuideCollectionView.trailingAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.trailingAnchor
+            )
+        ])
     }
 
     private func setupSearchController() {
@@ -121,6 +162,26 @@ final class SearchViewController: UIViewController {
         )
     }
 
+    private func setupSearchGuideCollectionView() {
+        let layout = createSearchGuideCollectionViewLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        self.searchGuideCollectionView = collectionView
+        self.searchGuideCollectionView.delegate = self
+        self.dataSource = self.createSearchGuideDataSource()
+        self.provideSupplementaryViewForCollectionView()
+        self.searchGuideCollectionView.register(
+            SearchQueryHistoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: "history"
+        )
+        self.searchGuideCollectionView.register(
+            TitleHeaderView.self,
+            forSupplementaryViewOfKind: "header",
+            withReuseIdentifier: "header"
+        )
+        self.snapShot.appendSections([.searchHistory])
+    }
+
     private func binding() {
         self.viewModel?.imageSearched = { [weak self] items in
             DispatchQueue.main.async {
@@ -136,6 +197,92 @@ final class SearchViewController: UIViewController {
                 return
             }
             controller.resetSnapshot()
+        }
+        self.viewModel?.searchQueriesHistoryFetched = { [weak self] queries in
+            self?.setSnapshot(
+                items: queries.map { SearchGuideItem.searchQueryHistory($0) },
+                for: .searchHistory
+            )
+        }
+    }
+
+    private func setSnapshot(items: [SearchGuideItem], for section: SearchGuideSection) {
+        let currentQueryItems = self.snapShot.itemIdentifiers(inSection: .searchHistory)
+        self.snapShot.deleteItems(currentQueryItems)
+        self.snapShot.appendItems(items, toSection: section)
+        self.dataSource?.apply(self.snapShot)
+    }
+
+    private func createSearchGuideCollectionViewLayout() -> UICollectionViewLayout {
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.interSectionSpacing = 10
+
+        let layout = UICollectionViewCompositionalLayout(
+            sectionProvider: { _, _ in
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .estimated(100),
+                    heightDimension: .fractionalHeight(1.0)
+                ))
+                item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .estimated(100),
+                    heightDimension: .absolute(50)
+                )
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: groupSize,
+                    subitems: [item]
+                )
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.interGroupSpacing = 10
+                let titleSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(30)
+                )
+                let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: titleSize,
+                    elementKind: "header",
+                    alignment: .top
+                )
+                section.boundarySupplementaryItems = [titleSupplementary]
+                section.orthogonalScrollingBehavior = .continuous
+                section.contentInsets = .init(top: 6, leading: 10, bottom: 6, trailing: 10)
+                return section
+            },
+            configuration: configuration
+        )
+
+        return layout
+    }
+
+    private func provideSupplementaryViewForCollectionView() {
+        self.dataSource?.supplementaryViewProvider = { (_, _, indexPath) in
+            guard let header = self.searchGuideCollectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "header",
+                for: indexPath
+            ) as? TitleHeaderView else { return nil }
+            header.configure(for: self.snapShot.sectionIdentifiers[indexPath.section].title)
+            return header
+        }
+    }
+
+    private func createSearchGuideDataSource() -> UICollectionViewDiffableDataSource<SearchGuideSection, SearchGuideItem> {
+        return UICollectionViewDiffableDataSource<SearchGuideSection, SearchGuideItem>(
+            collectionView: self.searchGuideCollectionView
+        ) { collectionView, indexPath, itemIdentifier in
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "history",
+                for: indexPath
+            ) as? SearchQueryHistoryCollectionViewCell else {
+                return nil
+            }
+            switch itemIdentifier {
+            case .searchQueryHistory(let query):
+                cell.configureContent(query)
+                return cell
+            }
         }
     }
 }
@@ -158,10 +305,12 @@ extension SearchViewController: UISearchBarDelegate {
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         self.searchResultController.view.isHidden = true
+        self.searchGuideCollectionView.isHidden = false
     }
 
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         self.searchResultController.view.isHidden = false
+        self.searchGuideCollectionView.isHidden = true
     }
 }
 

@@ -83,8 +83,8 @@ final class CoreDataProvider {
             do {
                 try self.context.save()
             } catch {
-                let nserror = error as NSError
-                throw DataSourceError.coreDataSaveFailure(nserror)
+                let nsError = error as NSError
+                throw DataSourceError.coreDataSaveFailure(nsError)
             }
         }
     }

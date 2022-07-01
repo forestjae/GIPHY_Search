@@ -43,7 +43,6 @@ class SearchResultContainerViewController: UIViewController {
     }
 
     func resetSnapshot() {
-        let currentItems = self.snapShot.itemIdentifiers
         self.snapShot.deleteItems(self.snapShot.itemIdentifiers)
         self.dataSource?.apply(self.snapShot)
     }
@@ -76,8 +75,64 @@ class SearchResultContainerViewController: UIViewController {
         ])
     }
 
+    private func createSearchResultCollectionViewLayout() -> UICollectionViewCompositionalLayout {
+        let itemSizeProvider: (IndexPath) -> CGSize = { indexPath in
+            guard let searchSection = SearchSection(rawValue: indexPath.section) else {
+                return CGSize(width: 100, height: 100)
+            }
+            let item = self.snapShot.itemIdentifiers(inSection: searchSection)[indexPath.row]
+            switch item {
+            case .image(let imageItemViewModel):
+                return CGSize(width: 250, height: 250 * imageItemViewModel.aspectRatio)
+            }
+        }
+
+        var numberOfItems: (Int) -> Int = { _ in 0 }
+        let layout = UICollectionViewCompositionalLayout { section, environment in
+            var columnHeights = [CGFloat](repeating: 0, count: 2)
+            let groupLayoutSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .estimated(environment.container.effectiveContentSize.height)
+            )
+
+            let group = NSCollectionLayoutGroup.custom(layoutSize: groupLayoutSize) { environment in
+                var groupLayoutItems = [NSCollectionLayoutGroupCustomItem]()
+                for item in 0..<numberOfItems(section) {
+                    let indexPath = IndexPath(item: item, section: section)
+                    let contentSize = environment.container.effectiveContentSize
+                    let spacing: CGFloat = 8
+                    let columnIndex = columnHeights
+                        .enumerated()
+                        .min(by: { $0.element < $1.element })?
+                        .offset ?? 0
+                    let width = (contentSize.width - spacing) / 2
+                    let itemSize = itemSizeProvider(indexPath)
+                    let aspectRatio = itemSize.height / itemSize.width
+                    let height = (width * aspectRatio)
+                    let adjustedItemSize = CGSize(width: width, height: height)
+                    let yPoint = columnHeights[columnIndex]
+                    let xPoint = (width + spacing) * CGFloat(columnIndex)
+                    let origin = CGPoint(x: xPoint, y: yPoint)
+                    let frame = CGRect(origin: origin, size: adjustedItemSize)
+                    columnHeights[columnIndex] = frame.maxY + spacing
+                    groupLayoutItems.append(NSCollectionLayoutGroupCustomItem(frame: frame))
+                }
+                return groupLayoutItems
+            }
+
+            let section = NSCollectionLayoutSection(group: group)
+            return section
+        }
+
+        numberOfItems = { [weak layout] in
+            layout?.collectionView?.numberOfItems(inSection: $0) ?? 0
+        }
+
+        return layout
+    }
+
     private func setupSearchResultCollectionView() {
-        let layout = createSearchResultCollectionViewLayout()
+        let layout = self.createSearchResultCollectionViewLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         self.searchResultCollectionView = collectionView
@@ -94,45 +149,6 @@ class SearchResultContainerViewController: UIViewController {
             withReuseIdentifier: "header"
         )
         self.snapShot.appendSections([SearchSection.searchResult])
-    }
-
-    private func createSearchResultCollectionViewLayout() -> UICollectionViewLayout {
-        let configuration = UICollectionViewCompositionalLayoutConfiguration()
-        configuration.interSectionSpacing = 10
-
-        let layout = UICollectionViewCompositionalLayout(
-            sectionProvider: { sectionIndex, _ in
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                     heightDimension: .fractionalHeight(1.0))
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalWidth(0.5))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
-                let spacing = CGFloat(10)
-                group.interItemSpacing = .fixed(spacing)
-
-                let section = NSCollectionLayoutSection(group: group)
-                section.interGroupSpacing = spacing
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-
-                let titleSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(30)
-                )
-                let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: titleSize,
-                    elementKind: "header",
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [titleSupplementary]
-
-                return section
-            },
-            configuration: configuration
-        )
-
-        return layout
     }
 
     private func provideSupplementaryViewForCollectionView() {

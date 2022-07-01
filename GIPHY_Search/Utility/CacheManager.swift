@@ -8,10 +8,12 @@
 import UIKit
 import AVFoundation
 
-class CacheManager {
-    static let imageCache = URLCache(memoryCapacity: 300 * 1024 * 1024,
-                                     diskCapacity: 1000 * 1024 * 1024,
-                                     directory: cacheDirectory)
+final class CacheManager {
+    static let imageCache = URLCache(
+        memoryCapacity: 300 * 1024 * 1024,
+        diskCapacity: 1000 * 1024 * 1024,
+        directory: cacheDirectory
+    )
 
     static let videoCache = NSCache<NSString, AVURLAsset>()
 
@@ -20,7 +22,8 @@ class CacheManager {
             for: .cachesDirectory,
             in: .allDomainsMask,
             appropriateFor: nil,
-            create: false)
+            create: false
+        )
         return url
     }()
 
@@ -35,6 +38,18 @@ class CacheManager {
                 self.downloadImage(request: request) { imageData in
                     completionHandler(imageData)
                 }
+            }
+        }
+    }
+
+    static func fetchVideo(videoURL: URL, completionHandler: @escaping (AVURLAsset) -> Void) {
+        if let cachedVideo = self.videoCache.object(forKey: videoURL.absoluteString as NSString) {
+            completionHandler(cachedVideo)
+        } else {
+            DispatchQueue.global().async {
+                let asset = AVURLAsset(url: videoURL)
+                self.videoCache.setObject(asset, forKey: videoURL.absoluteString as NSString)
+                completionHandler(asset)
             }
         }
     }
@@ -68,18 +83,6 @@ class CacheManager {
             completionHandler(.success(imageData))
         } else {
             completionHandler(.failure(.absentCashedImage))
-        }
-    }
-
-    static func fetchVideo(videoURL: URL, completionHandler: @escaping (AVURLAsset) -> Void) {
-        if let cachedVideo = self.videoCache.object(forKey: videoURL.absoluteString as NSString) {
-            completionHandler(cachedVideo)
-        } else {
-            DispatchQueue.global().async {
-                let asset = AVURLAsset(url: videoURL)
-                self.videoCache.setObject(asset, forKey: videoURL.absoluteString as NSString)
-                completionHandler(asset)
-            }
         }
     }
 }

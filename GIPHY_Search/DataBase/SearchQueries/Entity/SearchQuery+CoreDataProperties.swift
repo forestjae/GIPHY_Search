@@ -16,6 +16,8 @@ extension SearchQuery {
         return NSFetchRequest<SearchQuery>(entityName: "SearchQuery")
     }
 
+    @NSManaged public var query: String?
+    @NSManaged public var createdAt: Date?
 
 }
 

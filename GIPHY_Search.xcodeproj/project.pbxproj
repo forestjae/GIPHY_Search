@@ -183,10 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				333453AA286B962A0040A0A9 /* GiphyService.swift */,
-				333453A0286B82830040A0A9 /* GiphyAPIRequest.swift */,
-				333453A3286B853C0040A0A9 /* GifSearchRequest.swift */,
-				333453A5286B93760040A0A9 /* GifSearchResponse.swift */,
-				333453C1286C0D340040A0A9 /* GifSearchResponseDTO+Mapping.swift */,
+				338B1455286EC9CD0030C3DB /* Entity */,
 			);
 			path = Giphy;
 			sourceTree = "<group>";
@@ -215,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				333453B7286BE90E0040A0A9 /* SearchResultContainerViewController.swift */,
-				333453BF286BFE3B0040A0A9 /* ImageItemViewModel.swift */,
 				333453BD286BFC070040A0A9 /* ImageCollectionViewCell.swift */,
 			);
 			path = SearchResultContainer;
@@ -251,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				333453A8286B94DF0040A0A9 /* SearchViewModel.swift */,
+				333453BF286BFE3B0040A0A9 /* ImageItemViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -285,9 +282,8 @@
 		333453C9286C5B690040A0A9 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				333453D3286C9EC50040A0A9 /* Coordinator.swift */,
-				333453CA286C5B720040A0A9 /* PlayerView.swift */,
-				333453FF286E0FBF0040A0A9 /* TitleHeaderView.swift */,
+				338B1451286EC8A00030C3DB /* Protocol */,
+				338B1454286EC8B70030C3DB /* View */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -378,6 +374,34 @@
 			children = (
 				333453E5286D84490040A0A9 /* Favorites+CoreDataClass.swift */,
 				333453E6286D84490040A0A9 /* Favorites+CoreDataProperties.swift */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		338B1451286EC8A00030C3DB /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				333453D3286C9EC50040A0A9 /* Coordinator.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		338B1454286EC8B70030C3DB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				333453CA286C5B720040A0A9 /* PlayerView.swift */,
+				333453FF286E0FBF0040A0A9 /* TitleHeaderView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		338B1455286EC9CD0030C3DB /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				333453A0286B82830040A0A9 /* GiphyAPIRequest.swift */,
+				333453A3286B853C0040A0A9 /* GifSearchRequest.swift */,
+				333453A5286B93760040A0A9 /* GifSearchResponse.swift */,
+				333453C1286C0D340040A0A9 /* GifSearchResponseDTO+Mapping.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";

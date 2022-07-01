@@ -8,10 +8,10 @@
 import Foundation
 
 final class GiphyService {
-    let apiService: APIService
+    let apiProvider: APIProvider
 
-    init(apiService: APIService) {
-        self.apiService = apiService
+    init(apiProvider: APIProvider) {
+        self.apiProvider = apiProvider
     }
 
     func searchGif(
@@ -21,7 +21,7 @@ final class GiphyService {
         completion: @escaping ((Result<GifPage, APIError>) -> Void)
     ) -> Cancellable? {
         let request = GifSearchRequest(type: type, query: query, offset: offset)
-        return self.apiService.request(request) { result in
+        return self.apiProvider.request(request) { result in
             let convertedResult = result
                 .map { $0.toGifPage() }
             completion(convertedResult)

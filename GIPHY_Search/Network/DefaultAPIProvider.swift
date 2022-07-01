@@ -1,5 +1,5 @@
 //
-//  DefaultAPIService.swift
+//  DefaultAPIProvider.swift
 //  GIPHY_Search
 //
 //  Created by Lee Seung-Jae on 2022/06/29.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DefaultAPIService: APIService {
+final class DefaultAPIProvider: APIProvider {
     let session: URLSession = .shared
 
     func request<T: APIRequest>(

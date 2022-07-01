@@ -11,7 +11,7 @@ struct Gif {
     let identifier: String
     let title: String
     let user: User?
-    let imageSet: ImageSet
+    let imageBundle: ImageBundle
     let source: String?
     let type: ImageType
 }

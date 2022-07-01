@@ -27,10 +27,10 @@ extension GifResponse {
         }
 
         return Gif(
-            identifier: self.identifer,
+            identifier: self.identifier,
             title: self.title,
             user: self.user?.toUser(),
-            imageSet: self.images.toImageSet(),
+            imageBundle: self.images.toImageSet(),
             source: self.source == "" ? nil : self.source,
             type: type
         )
@@ -50,14 +50,14 @@ extension UserResponse {
 }
 
 extension ImageSetResponse {
-    func toImageSet() -> ImageSet {
+    func toImageSet() -> ImageBundle {
         let originalWidth = Double(self.original.width) ?? 100
         let originalHeight = Double(self.original.height) ?? 100
-        return ImageSet(
+        return ImageBundle(
             imageURL: self.original.url,
             originalWidth: originalWidth,
             originalHeight: originalHeight,
-            originalMP4Image: self.original.mp4,
+            originalMp4Image: self.original.mp4,
             gridImageURL: self.fixedWidth.url,
             gridMp4URL: self.fixedWidth.mp4
         )

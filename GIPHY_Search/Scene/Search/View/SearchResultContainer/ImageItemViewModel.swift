@@ -15,6 +15,6 @@ struct ImageItemViewModel: Hashable {
 extension ImageItemViewModel {
     init(image: Gif) {
         self.image = image
-        self.aspectRatio = image.imageSet.originalHeight / image.imageSet.originalWidth
+        self.aspectRatio = image.imageBundle.originalHeight / image.imageBundle.originalWidth
     }
 }

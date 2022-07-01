@@ -35,7 +35,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     func configureContent(_ viewModel: ImageItemViewModel) {
         self.contentView.backgroundColor = .random()
-        guard let videoURL = URL(string: viewModel.image.imageSet.gridMp4URL) else {
+        guard let videoURL = URL(string: viewModel.image.imageBundle.gridMp4URL) else {
             return
         }
 

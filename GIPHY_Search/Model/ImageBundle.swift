@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct ImageSet {
+struct ImageBundle {
     let imageURL: String
     let originalWidth: Double
     let originalHeight: Double
-    let originalMP4Image: String
+    let originalMp4Image: String
     let gridImageURL: String
     let gridMp4URL: String
 }
 
-extension ImageSet: Hashable { }
+extension ImageBundle: Hashable { }

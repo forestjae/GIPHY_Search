@@ -22,19 +22,19 @@ class DetailViewModel {
     var isFavorite: ((Bool) -> Void)?
 
     private let favoriteStorage: FavoriteStorage
-    private let identifer: String
+    private let identifier: String
     private let userImageURL: String?
 
     init(image: Gif) {
-        self.animatedImageURL = image.imageSet.originalMP4Image
+        self.animatedImageURL = image.imageBundle.originalMp4Image
         self.title = image.type.description
         self.userDisplayedName = image.user?.displayedName ?? image.user?.name
         self.userName = image.user?.name
         self.source = image.source
         self.isVerified = image.user?.isVerified
-        self.identifer = image.identifier
+        self.identifier = image.identifier
         self.userImageURL = image.user?.avatarImageURL
-        self.aspectRatio = image.imageSet.originalHeight / image.imageSet.originalWidth
+        self.aspectRatio = image.imageBundle.originalHeight / image.imageBundle.originalWidth
         self.favoriteStorage = FavoriteStorage()
     }
 
@@ -50,7 +50,7 @@ class DetailViewModel {
     }
 
     func favoriteStatus() {
-        self.favoriteStorage.isFavorite(of: self.identifer) { result in
+        self.favoriteStorage.isFavorite(of: self.identifier) { result in
             switch result {
             case .success(let isFavorite):
                 self.isFavorite?(isFavorite)
@@ -62,7 +62,7 @@ class DetailViewModel {
 
     func setFavorite(_ completion: (Bool) -> Void) {
         do {
-            try self.favoriteStorage.setFavorite(for: self.identifer)
+            try self.favoriteStorage.setFavorite(for: self.identifier)
             completion(true)
         } catch {
             completion(false)
@@ -71,7 +71,7 @@ class DetailViewModel {
 
     func setUnfavorite(_ completion: (Bool) -> Void) {
         do {
-            try self.favoriteStorage.setUnfavorite(for: self.identifer)
+            try self.favoriteStorage.setUnfavorite(for: self.identifier)
             completion(false)
         } catch {
             completion(true)

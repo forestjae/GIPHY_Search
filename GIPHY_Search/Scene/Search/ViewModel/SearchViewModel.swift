@@ -8,6 +8,9 @@
 import Foundation
 
 final class SearchViewModel {
+
+    // MARK: - Variable(s)
+
     weak var coordinator: SearchCoordinator?
     var searchQueriesHistoryFetched: (([String]) -> Void)?
     var imageSearched: (([ImageItemViewModel]) -> Void)?
@@ -20,11 +23,15 @@ final class SearchViewModel {
     private var currentOffset: Int?
     private var searchType: ImageType = .gif
     private var searchQuery: String?
+
+    // MARK: - Initializer(s)
     
     init(giphyService: GiphyService) {
         self.giphyService = giphyService
         self.searchQueryStorage = SearchQueryStorage()
     }
+
+    // MARK: - Method(s)
 
     func searchQueryText(_ text: String) {
         self.searchQuery = text
@@ -77,6 +84,8 @@ final class SearchViewModel {
             }
         }
     }
+
+    // MARK: - Private Method(s)
 
     private func saveQuery(_ query: String) {
         guard query != "" else {

@@ -47,7 +47,7 @@ final class SearchViewController: UIViewController {
         self.viewModel?.fetchQueryHistory()
     }
 
-    // MARK: - Method(s)
+    // MARK: - Private Method(s)
 
     private func setupController() {
         self.view.backgroundColor = .mainBackground
@@ -67,6 +67,30 @@ final class SearchViewController: UIViewController {
         self.contianerView.addSubview(self.searchResultController.view)
     }
 
+    private func binding() {
+        self.viewModel?.imageSearched = { [weak self] items in
+            DispatchQueue.main.async {
+                guard let controller = self?.searchResultController else {
+                    return
+                }
+                let searchItems = items.map { SearchItem.image($0) }
+                controller.appendSearchResultSnapshot(items: searchItems, for: .searchResult)
+            }
+        }
+        self.viewModel?.beginNewSearchSession = { [weak self] in
+            guard let controller = self?.searchResultController else {
+                return
+            }
+            controller.resetSnapshot()
+        }
+        self.viewModel?.searchQueriesHistoryFetched = { [weak self] queries in
+            self?.setSnapshot(
+                items: queries.map { SearchGuideItem.searchQueryHistory($0) },
+                for: .searchHistory
+            )
+        }
+    }
+
     private func setupNavigationBar() {
         self.navigationItem.searchController = self.searchController
         self.navigationController?.navigationBar.barStyle = .black
@@ -78,6 +102,44 @@ final class SearchViewController: UIViewController {
         self.searchResultController.delegate = self
         self.addChild(self.searchResultController)
         self.searchResultController.didMove(toParent: self)
+    }
+    
+
+    private func setupSearchController() {
+        self.searchController.searchBar.placeholder = "Search GIPHY"
+        self.searchController.searchBar.searchBarStyle = .minimal
+        self.searchController.searchBar.scopeButtonTitles = ImageType.allCases
+            .map { $0.description + "s"}
+        self.searchController.hidesNavigationBarDuringPresentation = false
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.delegate = self
+        self.searchController.searchBar.setImage(UIImage(), for: .search, state: .normal)
+        self.searchController.searchBar.showsScopeBar = true
+        self.searchController.automaticallyShowsScopeBar = false
+        self.searchController.searchBar.setScopeBarButtonTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .headline)],
+            for: .normal
+        )
+    }
+
+    private func setupSearchGuideCollectionView() {
+        let layout = createSearchGuideCollectionViewLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        self.searchGuideCollectionView = collectionView
+        self.searchGuideCollectionView.delegate = self
+        self.dataSource = self.createSearchGuideDataSource()
+        self.provideSupplementaryViewForCollectionView()
+        self.searchGuideCollectionView.register(
+            SearchQueryHistoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: "history"
+        )
+        self.searchGuideCollectionView.register(
+            TitleHeaderView.self,
+            forSupplementaryViewOfKind: "header",
+            withReuseIdentifier: "header"
+        )
+        self.snapShot.appendSections([.searchHistory])
     }
 
     private func setupConstraint() {
@@ -132,67 +194,6 @@ final class SearchViewController: UIViewController {
                 equalTo: self.view.safeAreaLayoutGuide.trailingAnchor
             )
         ])
-    }
-
-    private func setupSearchController() {
-        self.searchController.searchBar.placeholder = "Search GIPHY"
-        self.searchController.searchBar.searchBarStyle = .minimal
-        self.searchController.searchBar.scopeButtonTitles = ImageType.allCases
-            .map { $0.description + "s"}
-        self.searchController.hidesNavigationBarDuringPresentation = false
-        self.searchController.obscuresBackgroundDuringPresentation = false
-        self.searchController.searchBar.delegate = self
-        self.searchController.searchBar.setImage(UIImage(), for: .search, state: .normal)
-        self.searchController.searchBar.showsScopeBar = true
-        self.searchController.automaticallyShowsScopeBar = false
-        self.searchController.searchBar.setScopeBarButtonTitleTextAttributes(
-            [.font : UIFont.preferredFont(forTextStyle: .headline)],
-            for: .normal
-        )
-    }
-
-    private func setupSearchGuideCollectionView() {
-        let layout = createSearchGuideCollectionViewLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        self.searchGuideCollectionView = collectionView
-        self.searchGuideCollectionView.delegate = self
-        self.dataSource = self.createSearchGuideDataSource()
-        self.provideSupplementaryViewForCollectionView()
-        self.searchGuideCollectionView.register(
-            SearchQueryHistoryCollectionViewCell.self,
-            forCellWithReuseIdentifier: "history"
-        )
-        self.searchGuideCollectionView.register(
-            TitleHeaderView.self,
-            forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "header"
-        )
-        self.snapShot.appendSections([.searchHistory])
-    }
-
-    private func binding() {
-        self.viewModel?.imageSearched = { [weak self] items in
-            DispatchQueue.main.async {
-                guard let controller = self?.searchResultController else {
-                    return
-                }
-                let searchItems = items.map { SearchItem.image($0) }
-                controller.appendSearchResultSnapshot(items: searchItems, for: .searchResult)
-            }
-        }
-        self.viewModel?.beginNewSearchSession = { [weak self] in
-            guard let controller = self?.searchResultController else {
-                return
-            }
-            controller.resetSnapshot()
-        }
-        self.viewModel?.searchQueriesHistoryFetched = { [weak self] queries in
-            self?.setSnapshot(
-                items: queries.map { SearchGuideItem.searchQueryHistory($0) },
-                for: .searchHistory
-            )
-        }
     }
 
     private func setSnapshot(items: [SearchGuideItem], for section: SearchGuideSection) {
@@ -276,6 +277,8 @@ final class SearchViewController: UIViewController {
     }
 }
 
+// MARK: - UISearchBar Delegate
+
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel?.searchImageBegin()
@@ -303,6 +306,8 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
+// MARK: - SearchResultContainerViewController Delegate
+
 extension SearchViewController: SearchResultContainerViewControllerDelegate {
     func didSelectItem(_ item: SearchItem) {
         switch item {
@@ -315,6 +320,8 @@ extension SearchViewController: SearchResultContainerViewControllerDelegate {
         self.viewModel?.loadNextPage()
     }
 }
+
+// MARK: - UICollectionViewDelegate Delegate
 
 extension SearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

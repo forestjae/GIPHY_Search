@@ -186,6 +186,8 @@ class SearchResultContainerViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionView Delegate
+
 extension SearchResultContainerViewController: UICollectionViewDelegate {
     func collectionView(
         _ collectionView: UICollectionView,

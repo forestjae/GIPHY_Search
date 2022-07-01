@@ -66,7 +66,7 @@ class SearchQueryHistoryCollectionViewCell: UICollectionViewCell {
         self.imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.imageView.widthAnchor.constraint(equalToConstant: 20),
-            self.imageView.heightAnchor.constraint(equalToConstant: 20),
+            self.imageView.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
 }

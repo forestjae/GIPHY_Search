@@ -58,6 +58,11 @@ final class SearchViewController: UIViewController {
         self.binding()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel?.fetchQueryHistory()
+    }
+
     // MARK: - Method(s)
 
     private func setupController() {
@@ -324,5 +329,21 @@ extension SearchViewController: SearchResultContainerViewControllerDelegate {
 
     func didEndScroll() {
         self.viewModel?.loadNextPage()
+    }
+}
+
+extension SearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = SearchGuideSection(rawValue: indexPath.section) else {
+            return
+        }
+        let item = self.snapShot.itemIdentifiers(inSection: section)[indexPath.row]
+        switch item {
+        case .searchQueryHistory(let query):
+            searchController.searchBar.becomeFirstResponder()
+            self.searchController.searchBar.text = query
+            self.viewModel?.searchImageBegin(with: query)
+            searchController.searchBar.resignFirstResponder()
+        }
     }
 }

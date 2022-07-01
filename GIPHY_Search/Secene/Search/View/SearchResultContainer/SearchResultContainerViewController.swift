@@ -152,14 +152,6 @@ class SearchResultContainerViewController: UIViewController {
     }
 }
 
-enum SearchSection: Int {
-    case searchResult = 0
-}
-
-enum SearchItem: Hashable {
-    case image(ImageItemViewModel)
-}
-
 extension SearchResultContainerViewController: UICollectionViewDelegate {
     func collectionView(
         _ collectionView: UICollectionView,

@@ -109,3 +109,37 @@ final class SearchViewModel {
         self.currentOffset = nil
     }
 }
+
+// MARK: - Search Section/Item
+
+enum SearchSection: Int {
+    case searchResult = 0
+
+    var title: String {
+        switch self {
+        case .searchResult:
+            return "All The GIFs"
+        }
+    }
+}
+
+enum SearchItem: Hashable {
+    case image(ImageItemViewModel)
+}
+
+// MARK: - SearchGuide Section/Item
+
+enum SearchGuideSection: Int {
+    case searchHistory = 0
+
+    var title: String {
+        switch self {
+        case .searchHistory:
+            return "Recent Searches"
+        }
+    }
+}
+
+enum SearchGuideItem: Hashable {
+    case searchQueryHistory(String)
+}

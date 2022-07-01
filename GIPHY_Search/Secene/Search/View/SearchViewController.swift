@@ -9,22 +9,6 @@ import UIKit
 
 final class SearchViewController: UIViewController {
 
-    // MARK: - CollectionView Section/Item
-    enum SearchGuideSection: Int {
-        case searchHistory = 0
-
-        var title: String {
-            switch self {
-            case .searchHistory:
-                return "Recent Searches"
-            }
-        }
-    }
-
-    enum SearchGuideItem: Hashable {
-        case searchQueryHistory(String)
-    }
-
     // MARK: - Variable(s)
 
     var viewModel: SearchViewModel?

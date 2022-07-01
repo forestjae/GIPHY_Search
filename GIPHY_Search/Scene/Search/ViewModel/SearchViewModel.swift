@@ -75,10 +75,10 @@ final class SearchViewModel {
     }
 
     func fetchQueryHistory() {
-        self.searchQueryStorage.fetchQuery { result in
+        self.searchQueryStorage.fetchQuery { [weak self] result in
             switch result {
             case .success(let queries):
-                self.searchQueriesHistoryFetched?(queries)
+                self?.searchQueriesHistoryFetched?(queries)
             case .failure:
                 return
             }
@@ -99,15 +99,15 @@ final class SearchViewModel {
             type: type,
             query: query,
             offset: offset
-        ) { result in
+        ) { [weak self] result in
             switch result {
             case .success(let gifPage):
-                self.hasNextPage = gifPage.hasNextPage
-                self.currentOffset = gifPage.offset + 10
-                self.imageSearched?(gifPage.gifs.map { ImageItemViewModel(image: $0) })
-                self.imageSearchTask = nil
-            case .failure(let error):
-                print(error)
+                self?.hasNextPage = gifPage.hasNextPage
+                self?.currentOffset = gifPage.offset + 10
+                self?.imageSearched?(gifPage.gifs.map { ImageItemViewModel(image: $0) })
+                self?.imageSearchTask = nil
+            case .failure:
+                return
             }
         }
         self.imageSearchTask = task

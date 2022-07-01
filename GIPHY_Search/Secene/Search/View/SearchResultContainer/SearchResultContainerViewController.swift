@@ -83,30 +83,25 @@ class SearchResultContainerViewController: UIViewController {
         self.searchResultCollectionView = collectionView
         self.searchResultCollectionView.delegate = self
         self.dataSource = self.createSearchResultDataSource()
+        self.provideSupplementaryViewForCollectionView()
         self.searchResultCollectionView.register(
             ImageCollectionViewCell.self,
             forCellWithReuseIdentifier: "image"
+        )
+        self.searchResultCollectionView.register(
+            TitleHeaderView.self,
+            forSupplementaryViewOfKind: "header",
+            withReuseIdentifier: "header"
         )
         self.snapShot.appendSections([SearchSection.searchResult])
     }
 
     private func createSearchResultCollectionViewLayout() -> UICollectionViewLayout {
-        let items = snapShot.itemIdentifiers
-        let imageItems = items.map { item -> ImageItemViewModel in
-            switch item {
-            case .image(let imageItemViewModel):
-                return imageItemViewModel
-            }
-        }
-
         let configuration = UICollectionViewCompositionalLayoutConfiguration()
         configuration.interSectionSpacing = 10
 
         let layout = UICollectionViewCompositionalLayout(
             sectionProvider: { sectionIndex, _ in
-                guard let sectionLayoutKind = SearchSection(rawValue: sectionIndex) else {
-                    return nil
-                }
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                      heightDimension: .fractionalHeight(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -121,12 +116,35 @@ class SearchResultContainerViewController: UIViewController {
                 section.interGroupSpacing = spacing
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
 
+                let titleSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(30)
+                )
+                let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: titleSize,
+                    elementKind: "header",
+                    alignment: .top
+                )
+                section.boundarySupplementaryItems = [titleSupplementary]
+
                 return section
             },
             configuration: configuration
         )
 
         return layout
+    }
+
+    private func provideSupplementaryViewForCollectionView() {
+        self.dataSource?.supplementaryViewProvider = { (_, _, indexPath) in
+            guard let header = self.searchResultCollectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "header",
+                for: indexPath
+            ) as? TitleHeaderView else { return nil }
+            header.configure(for: self.snapShot.sectionIdentifiers[indexPath.section].title)
+            return header
+        }
     }
 
     private func createSearchResultDataSource() -> UICollectionViewDiffableDataSource<SearchSection, SearchItem> {

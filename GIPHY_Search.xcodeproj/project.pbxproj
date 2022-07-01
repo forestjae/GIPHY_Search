@@ -322,24 +322,8 @@
 				333453E0286D82230040A0A9 /* Model.xcdatamodeld */,
 				333453F4286D87F10040A0A9 /* Favorites */,
 				333453F5286D88020040A0A9 /* SearchQueries */,
-				333453E3286D83A80040A0A9 /* Model */,
 			);
 			path = DataBase;
-			sourceTree = "<group>";
-		};
-		333453E3286D83A80040A0A9 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				333453E4286D83B40040A0A9 /* Favorites */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		333453E4286D83B40040A0A9 /* Favorites */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Favorites;
 			sourceTree = "<group>";
 		};
 		333453ED286D84630040A0A9 /* Entity */ = {

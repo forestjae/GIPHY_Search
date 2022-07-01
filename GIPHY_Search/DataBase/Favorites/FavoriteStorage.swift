@@ -16,27 +16,27 @@ final class FavoriteStorage {
     }
 
     func isFavorite(
-        of identifer: String,
+        of identifier: String,
         completion: @escaping (Result<Bool, Error>) -> Void
     ) {
         do {
             let result = try self.coreDataProvider.fetch(request: Favorites.fetchRequest())
                 .map { $0.identifier }
-            completion(.success(result.contains(identifer)))
+            completion(.success(result.contains(identifier)))
         } catch let error {
             completion(.failure(error))
         }
     }
 
-    func setFavorite(for identifer: String) throws {
+    func setFavorite(for identifier: String) throws {
         try self.coreDataProvider.create(
             entityName: String(describing: Favorites.self),
-            values: ["identifier" : identifer]
+            values: ["identifier" : identifier]
         )
     }
 
-    func setUnfavorite(for identifer: String) throws {
-        let predicate = NSPredicate(format: "identifier == %@", identifer)
+    func setUnfavorite(for identifier: String) throws {
+        let predicate = NSPredicate(format: "identifier == %@", identifier)
         let objects = try self.coreDataProvider.fetch(
             request: Favorites.fetchRequest(),
             predicate: predicate

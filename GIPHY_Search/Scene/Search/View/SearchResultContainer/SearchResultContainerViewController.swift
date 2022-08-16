@@ -76,28 +76,25 @@ class SearchResultContainerViewController: UIViewController {
     }
 
     private func createSearchResultCollectionViewLayout() -> UICollectionViewCompositionalLayout {
-        let itemSizeProvider: (IndexPath) -> CGSize = { indexPath in
-            guard let searchSection = SearchSection(rawValue: indexPath.section) else {
-                return CGSize(width: 100, height: 100)
-            }
-            let item = self.snapShot.itemIdentifiers(inSection: searchSection)[indexPath.row]
-            switch item {
-            case .image(let imageItemViewModel):
-                return CGSize(width: 250, height: 250 * imageItemViewModel.aspectRatio)
-            }
-        }
 
-        var numberOfItems: (Int) -> Int = { _ in 0 }
-        let layout = UICollectionViewCompositionalLayout { section, environment in
+        /*
+         핵심 로직: item들의 aspect ratio를 적용해서 새로운 GroupCustomItem을 만들어 내고,
+         현재 더 낮은 높이를 가진 컬럼에다가 넣는다. 이때 origin도 지정을 해줘야 하는데 현재 그룹의 높이와 열을 통해서 구한다.
+        */
+
+        let layout = UICollectionViewCompositionalLayout { [weak self] section, environment in
             var columnHeights = [CGFloat](repeating: 0, count: 2)
+
             let groupLayoutSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .estimated(environment.container.effectiveContentSize.height)
             )
 
+            let numberOfItem = self?.searchResultCollectionView.numberOfItems(inSection: section) ?? 0
+
             let group = NSCollectionLayoutGroup.custom(layoutSize: groupLayoutSize) { environment in
                 var groupLayoutItems = [NSCollectionLayoutGroupCustomItem]()
-                for item in 0..<numberOfItems(section) {
+                for item in 0..<numberOfItem {
                     let indexPath = IndexPath(item: item, section: section)
                     let contentSize = environment.container.effectiveContentSize
                     let spacing: CGFloat = 8
@@ -106,8 +103,18 @@ class SearchResultContainerViewController: UIViewController {
                         .min(by: { $0.element < $1.element })?
                         .offset ?? 0
                     let width = (contentSize.width - spacing) / 2
-                    let itemSize = itemSizeProvider(indexPath)
-                    let aspectRatio = itemSize.height / itemSize.width
+                    var aspectRatio = 1.0
+
+                    if let searchSection = SearchSection(rawValue: indexPath.section) {
+                        let item = self?.snapShot.itemIdentifiers(inSection: searchSection)[indexPath.row]
+                        switch item {
+                        case .image(let model):
+                            aspectRatio = model.aspectRatio
+                        default:
+                            aspectRatio = 1.0
+                        }
+                    }
+
                     let height = (width * aspectRatio)
                     let adjustedItemSize = CGSize(width: width, height: height)
                     let yPoint = columnHeights[columnIndex]
@@ -132,10 +139,6 @@ class SearchResultContainerViewController: UIViewController {
             )
             section.boundarySupplementaryItems = [titleSupplementary]
             return section
-        }
-
-        numberOfItems = { [weak layout] in
-            layout?.collectionView?.numberOfItems(inSection: $0) ?? 0
         }
 
         return layout
@@ -183,14 +186,11 @@ class SearchResultContainerViewController: UIViewController {
             ) as? ImageCollectionViewCell else {
                 return nil
             }
-            DispatchQueue.main.async {
-                if indexPath == self.searchResultCollectionView.indexPath(for: cell) {
-                    switch itemIdentifier {
-                    case .image(let imageItemViewModel):
-                        cell.configureContent(imageItemViewModel)
-                    }
-                }
+            switch itemIdentifier {
+            case .image(let imageItemViewModel):
+                cell.configureContent(imageItemViewModel)
             }
+
             return cell
         }
     }

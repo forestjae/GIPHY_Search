@@ -26,6 +26,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
         self.player = nil
     }
 

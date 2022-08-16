@@ -25,7 +25,7 @@
 		333453A4286B853C0040A0A9 /* GifSearchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453A3286B853C0040A0A9 /* GifSearchRequest.swift */; };
 		333453A6286B93760040A0A9 /* GifSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453A5286B93760040A0A9 /* GifSearchResponse.swift */; };
 		333453A9286B94DF0040A0A9 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453A8286B94DF0040A0A9 /* SearchViewModel.swift */; };
-		333453AB286B962A0040A0A9 /* GiphyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453AA286B962A0040A0A9 /* GiphyService.swift */; };
+		333453AB286B962A0040A0A9 /* DefaultGiphyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453AA286B962A0040A0A9 /* DefaultGiphyService.swift */; };
 		333453B3286B9C600040A0A9 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333453B2286B9C600040A0A9 /* Colors.xcassets */; };
 		333453B6286B9CCF0040A0A9 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453B5286B9CCF0040A0A9 /* Color.swift */; };
 		333453B8286BE90E0040A0A9 /* SearchResultContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453B7286BE90E0040A0A9 /* SearchResultContainerViewController.swift */; };
@@ -54,6 +54,7 @@
 		333453FE286E09680040A0A9 /* SearchQuery+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453FC286E09680040A0A9 /* SearchQuery+CoreDataProperties.swift */; };
 		33345400286E0FBF0040A0A9 /* TitleHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333453FF286E0FBF0040A0A9 /* TitleHeaderView.swift */; };
 		33345403286E17B80040A0A9 /* SearchQueryHistoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33345402286E17B80040A0A9 /* SearchQueryHistoryCollectionViewCell.swift */; };
+		339151EC28AB3EBF0036CF42 /* GiphyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339151EB28AB3EBF0036CF42 /* GiphyService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,7 +78,7 @@
 		333453A3286B853C0040A0A9 /* GifSearchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifSearchRequest.swift; sourceTree = "<group>"; };
 		333453A5286B93760040A0A9 /* GifSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifSearchResponse.swift; sourceTree = "<group>"; };
 		333453A8286B94DF0040A0A9 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
-		333453AA286B962A0040A0A9 /* GiphyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyService.swift; sourceTree = "<group>"; };
+		333453AA286B962A0040A0A9 /* DefaultGiphyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGiphyService.swift; sourceTree = "<group>"; };
 		333453B2286B9C600040A0A9 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		333453B5286B9CCF0040A0A9 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		333453B7286BE90E0040A0A9 /* SearchResultContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultContainerViewController.swift; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		333453FC286E09680040A0A9 /* SearchQuery+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchQuery+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		333453FF286E0FBF0040A0A9 /* TitleHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleHeaderView.swift; sourceTree = "<group>"; };
 		33345402286E17B80040A0A9 /* SearchQueryHistoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueryHistoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		339151EB28AB3EBF0036CF42 /* GiphyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,7 +184,8 @@
 		3334539A286B7D860040A0A9 /* Giphy */ = {
 			isa = PBXGroup;
 			children = (
-				333453AA286B962A0040A0A9 /* GiphyService.swift */,
+				339151EB28AB3EBF0036CF42 /* GiphyService.swift */,
+				333453AA286B962A0040A0A9 /* DefaultGiphyService.swift */,
 				338B1455286EC9CD0030C3DB /* Entity */,
 			);
 			path = Giphy;
@@ -463,6 +466,7 @@
 			files = (
 				33345393286B7AF90040A0A9 /* Cancellable.swift in Sources */,
 				333453C0286BFE3B0040A0A9 /* ImageItemViewModel.swift in Sources */,
+				339151EC28AB3EBF0036CF42 /* GiphyService.swift in Sources */,
 				33345400286E0FBF0040A0A9 /* TitleHeaderView.swift in Sources */,
 				33345387286B57E20040A0A9 /* ImageBundle.swift in Sources */,
 				333453E9286D84490040A0A9 /* Favorites+CoreDataClass.swift in Sources */,
@@ -496,7 +500,7 @@
 				333453F1286D85A60040A0A9 /* CoreDataError.swift in Sources */,
 				333453C2286C0D340040A0A9 /* GifSearchResponseDTO+Mapping.swift in Sources */,
 				33345370286B36CF0040A0A9 /* SceneDelegate.swift in Sources */,
-				333453AB286B962A0040A0A9 /* GiphyService.swift in Sources */,
+				333453AB286B962A0040A0A9 /* DefaultGiphyService.swift in Sources */,
 				3334538F286B76130040A0A9 /* APIError.swift in Sources */,
 				333453A6286B93760040A0A9 /* GifSearchResponse.swift in Sources */,
 				333453EA286D84490040A0A9 /* Favorites+CoreDataProperties.swift in Sources */,

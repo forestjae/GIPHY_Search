@@ -18,7 +18,7 @@ final class SearchCoordinator: Coordinator {
     func start() {
         let searchViewController = SearchViewController()
         let searchViewModel = SearchViewModel(
-            giphyService: GiphyService(
+            giphyService: DefaultGiphyService(
                 apiProvider: DefaultAPIProvider()
             )
         )

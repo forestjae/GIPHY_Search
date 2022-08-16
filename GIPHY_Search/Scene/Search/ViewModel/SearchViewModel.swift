@@ -67,7 +67,11 @@ final class SearchViewModel {
               hasNextPage, self.imageSearchTask == nil else {
             return
         }
-        self.searchImage(for: .gif, with: "apple", offset: offset)
+        guard let searchQuery = searchQuery else {
+            return
+        }
+
+        self.searchImage(for: .gif, with: searchQuery, offset: offset)
     }
 
     func didSelectItem(_ item: ImageItemViewModel) {

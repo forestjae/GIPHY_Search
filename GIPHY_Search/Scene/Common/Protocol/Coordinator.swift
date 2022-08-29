@@ -9,6 +9,8 @@ import Foundation
 
 protocol Coordinator: AnyObject {
     var childCoordinator: [Coordinator] { get set }
+    var finishDelegate: CoordinationFinishDelegate? { get }
+    var identifer: UUID { get }
 
     func start()
     func finish()
@@ -17,5 +19,6 @@ protocol Coordinator: AnyObject {
 extension Coordinator {
     func finish() {
         self.childCoordinator.removeAll()
+        self.finishDelegate?.coordinationDidFinish(child: self)
     }
 }

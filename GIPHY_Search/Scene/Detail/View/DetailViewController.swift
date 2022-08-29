@@ -123,6 +123,7 @@ final class DetailViewController: UIViewController {
         self.setupHierarchy()
         self.setupConstraint()
         self.binding()
+        self.navigationController?.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -303,5 +304,22 @@ final class DetailViewController: UIViewController {
                 self?.favoriteButton.isSelected = bool
             }
         }
+    }
+}
+
+extension DetailViewController: UINavigationControllerDelegate {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        animationControllerFor operation: UINavigationController.Operation,
+        from fromVC: UIViewController,
+        to toVC: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        if operation == .pop {
+            self.viewModel?.coordinator?.finish()
+        }
+
+        self.navigationController?.delegate = nil
+
+        return nil
     }
 }

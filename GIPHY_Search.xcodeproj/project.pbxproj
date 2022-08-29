@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		331DF36F28BC765000CD0A97 /* CoordinationFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331DF36E28BC765000CD0A97 /* CoordinationFinishDelegate.swift */; };
 		3334536E286B36CF0040A0A9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334536D286B36CF0040A0A9 /* AppDelegate.swift */; };
 		33345370286B36CF0040A0A9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334536F286B36CF0040A0A9 /* SceneDelegate.swift */; };
 		33345372286B36CF0040A0A9 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33345371286B36CF0040A0A9 /* SearchViewController.swift */; };
@@ -58,6 +59,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		331DF36E28BC765000CD0A97 /* CoordinationFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinationFinishDelegate.swift; sourceTree = "<group>"; };
 		3334536A286B36CF0040A0A9 /* GIPHY_Search.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GIPHY_Search.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3334536D286B36CF0040A0A9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3334536F286B36CF0040A0A9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -369,6 +371,7 @@
 			isa = PBXGroup;
 			children = (
 				333453D3286C9EC50040A0A9 /* Coordinator.swift */,
+				331DF36E28BC765000CD0A97 /* CoordinationFinishDelegate.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				33345399286B7D530040A0A9 /* APIProvider.swift in Sources */,
 				333453CB286C5B720040A0A9 /* PlayerView.swift in Sources */,
 				333453EF286D85590040A0A9 /* CoreDataProvider.swift in Sources */,
+				331DF36F28BC765000CD0A97 /* CoordinationFinishDelegate.swift in Sources */,
 				333453BE286BFC070040A0A9 /* ImageCollectionViewCell.swift in Sources */,
 				3334536E286B36CF0040A0A9 /* AppDelegate.swift in Sources */,
 				333453A4286B853C0040A0A9 /* GifSearchRequest.swift in Sources */,

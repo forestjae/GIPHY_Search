@@ -8,6 +8,10 @@
 import UIKit
 
 final class AppCoordinator: Coordinator {
+    var finishDelegate: CoordinationFinishDelegate? = nil
+
+    let identifer = UUID()
+
     var childCoordinator: [Coordinator] = []
     let window: UIWindow
 
@@ -24,8 +28,13 @@ final class AppCoordinator: Coordinator {
     }
 
     private func searchFlow(navigationController: UINavigationController) {
-        let searchCoordinator = SearchCoordinator(navigationController: navigationController)
+        let searchCoordinator = SearchCoordinator(
+            navigationController: navigationController,
+            finishDelegate: self
+        )
         self.childCoordinator.append(searchCoordinator)
         searchCoordinator.start()
     }
 }
+
+extension AppCoordinator: CoordinationFinishDelegate { }

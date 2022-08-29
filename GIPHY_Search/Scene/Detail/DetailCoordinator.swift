@@ -8,14 +8,21 @@
 import UIKit
 
 final class DetailCoordinator: Coordinator {
+    weak var finishDelegate: CoordinationFinishDelegate?
+    let identifer = UUID()
     var childCoordinator: [Coordinator] = []
 
     private weak var navigationController: UINavigationController?
     private let image: Gif
 
-    init(navigationController: UINavigationController?, image: Gif) {
+    init(
+        navigationController: UINavigationController?,
+        image: Gif,
+        finishDelegate: CoordinationFinishDelegate
+    ) {
         self.navigationController = navigationController
         self.image = image
+        self.finishDelegate = finishDelegate
     }
 
     func start() {

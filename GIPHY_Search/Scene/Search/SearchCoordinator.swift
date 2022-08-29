@@ -8,11 +8,18 @@
 import UIKit
 
 final class SearchCoordinator: Coordinator {
+    weak var finishDelegate: CoordinationFinishDelegate?
+    let identifer: UUID = UUID()
     var childCoordinator: [Coordinator] = []
+
     private weak var navigationController: UINavigationController?
 
-    init(navigationController: UINavigationController) {
+    init(
+        navigationController: UINavigationController,
+        finishDelegate: CoordinationFinishDelegate
+    ) {
         self.navigationController = navigationController
+        self.finishDelegate = finishDelegate
     }
 
     func start() {
@@ -30,9 +37,12 @@ final class SearchCoordinator: Coordinator {
     func detailFlow(with image: Gif) {
         let detailCoordinator = DetailCoordinator(
             navigationController: self.navigationController,
-            image: image
+            image: image,
+            finishDelegate: self
         )
         self.childCoordinator.append(detailCoordinator)
         detailCoordinator.start()
     }
 }
+
+extension SearchCoordinator: CoordinationFinishDelegate { }
